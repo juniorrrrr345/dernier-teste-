@@ -1,0 +1,19 @@
+{
+  "shop": {
+    "name": "CBD Premium Boutique",
+    "description": "Votre boutique de confiance pour des produits CBD de qualité premium",
+    "backgroundColor": "#1a1a1a",
+    "backgroundImage": "",
+    "isDarkMode": true,
+    "footer": "© 2024 CBD Premium Boutique - Tous droits réservés",
+    "socialLinks": {
+      "facebook": "https://facebook.com/cbdpremium",
+      "instagram": "https://instagram.com/cbdpremium",
+      "twitter": "https://twitter.com/cbdpremium",
+      "youtube": "https://youtube.com/cbdpremium"
+    }
+  },
+  "admin": {
+    "password": "admin123"
+  }
+}
