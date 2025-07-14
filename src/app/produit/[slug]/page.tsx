@@ -5,13 +5,14 @@ import Footer from '@/components/Footer';
 import { ExternalLink, Play, Pause } from 'lucide-react';
 
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-  const product = getProductBySlug(params.slug);
+export default async function ProductPage({ params }: ProductPageProps) {
+  const { slug } = await params;
+  const product = getProductBySlug(slug);
   const config = getShopConfig();
 
   if (!product) {

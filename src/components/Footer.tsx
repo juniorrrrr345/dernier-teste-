@@ -1,6 +1,7 @@
 'use client';
 
 import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
+import Link from 'next/link';
 import { ShopConfig } from '@/types';
 
 interface FooterProps {
@@ -44,7 +45,7 @@ export default function Footer({ config }: FooterProps) {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a 
+                <Link 
                   href="/" 
                   className={`transition-colors duration-200 ${
                     config.isDarkMode 
@@ -53,10 +54,10 @@ export default function Footer({ config }: FooterProps) {
                   }`}
                 >
                   Accueil
-                </a>
+                </Link>
               </li>
               <li>
-                <a 
+                <Link 
                   href="/admin" 
                   className={`transition-colors duration-200 ${
                     config.isDarkMode 
@@ -65,7 +66,7 @@ export default function Footer({ config }: FooterProps) {
                   }`}
                 >
                   Administration
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
