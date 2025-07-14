@@ -1,0 +1,52 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Huile CBD 10%",
+      "description": "Huile CBD premium à 10% de concentration, extraite de chanvre biologique. Idéale pour le bien-être quotidien et la relaxation.",
+      "price": 49.99,
+      "imageUrl": "/images/cbd-oil-10.jpg",
+      "videoUrl": "/videos/cbd-oil-10.mp4",
+      "orderLink": "https://example.com/order/cbd-oil-10",
+      "slug": "huile-cbd-10",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Fleurs CBD 20%",
+      "description": "Fleurs de CBD de haute qualité avec 20% de CBD. Variété aromatique et relaxante, parfaite pour les connaisseurs.",
+      "price": 29.99,
+      "imageUrl": "/images/cbd-flowers-20.jpg",
+      "videoUrl": "/videos/cbd-flowers-20.mp4",
+      "orderLink": "https://example.com/order/cbd-flowers-20",
+      "slug": "fleurs-cbd-20",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Gélules CBD 5%",
+      "description": "Gélules CBD pratiques et discrètes. Dosage précis de 5% CBD, parfait pour une consommation régulière et contrôlée.",
+      "price": 39.99,
+      "imageUrl": "/images/cbd-capsules-5.jpg",
+      "videoUrl": "/videos/cbd-capsules-5.mp4",
+      "orderLink": "https://example.com/order/cbd-capsules-5",
+      "slug": "gelules-cbd-5",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "4",
+      "name": "Crème CBD 3%",
+      "description": "Crème CBD hydratante et apaisante à 3% de concentration. Idéale pour les soins de la peau et le bien-être local.",
+      "price": 24.99,
+      "imageUrl": "/images/cbd-cream-3.jpg",
+      "videoUrl": "/videos/cbd-cream-3.mp4",
+      "orderLink": "https://example.com/order/cbd-cream-3",
+      "slug": "creme-cbd-3",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}
