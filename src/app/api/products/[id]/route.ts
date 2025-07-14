@@ -1,29 +1,38 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getProducts, saveProducts } from '@/lib/data';
+import { NextResponse } from 'next/server';
+import { supabase, mockData, isUsingMockData } from '@/lib/supabase';
 
-export async function DELETE(
-  request: NextRequest,
+export async function GET(
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const products = getProducts();
-    const filteredProducts = products.filter(p => p.id !== id);
     
-    if (filteredProducts.length === products.length) {
-      return NextResponse.json(
-        { success: false, error: 'Produit non trouvé' },
-        { status: 404 }
-      );
+    if (isUsingMockData()) {
+      // Utiliser les données mockées
+      const product = mockData.products.find(p => p.id === id);
+      if (!product) {
+        return NextResponse.json({ error: 'Produit non trouvé' }, { status: 404 });
+      }
+      return NextResponse.json(product);
     }
-    
-    saveProducts(filteredProducts);
-    
-    return NextResponse.json({ success: true });
+
+    // Utiliser Supabase si configuré
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .eq('is_active', true)
+      .single();
+
+    if (error) {
+      console.error('Erreur Supabase:', error);
+      return NextResponse.json({ error: 'Produit non trouvé' }, { status: 404 });
+    }
+
+    return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Erreur lors de la suppression du produit' },
-      { status: 500 }
-    );
+    console.error('Erreur API product:', error);
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

@@ -1,107 +1,93 @@
 'use client';
 
-import { useState } from 'react';
+import { Product } from '@/types';
+import { Card, CardContent, CardFooter } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { formatPrice } from '@/lib/utils';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Play, Pause } from 'lucide-react';
-import { Product, ShopConfig } from '@/types';
+import Image from 'next/image';
+import { useState } from 'react';
 
 interface ProductCardProps {
   product: Product;
-  config: ShopConfig;
+  index?: number;
 }
 
-export default function ProductCard({ product, config }: ProductCardProps) {
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-
-  const handleVideoClick = () => {
-    setIsVideoPlaying(!isVideoPlaying);
-  };
+export function ProductCard({ product, index = 0 }: ProductCardProps) {
+  const [imageError, setImageError] = useState(false);
 
   return (
-    <div className={`group relative overflow-hidden rounded-xl transition-all duration-300 ${
-      config.isDarkMode 
-        ? 'bg-gray-800 hover:bg-gray-700' 
-        : 'bg-white hover:bg-gray-50'
-    } shadow-lg hover:shadow-xl`}>
-      {/* Media Container */}
-      <div className="relative aspect-video overflow-hidden">
-        {/* Image */}
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
-            isImageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          onLoad={() => setIsImageLoaded(true)}
-        />
-        
-        {/* Video Overlay */}
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-          <video
-            src={product.videoUrl}
-            className="w-full h-full object-cover"
-            muted
-            loop
-            playsInline
-            autoPlay={isVideoPlaying}
-          />
-          
-          {/* Play/Pause Button */}
-          <button
-            onClick={handleVideoClick}
-            className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ${
-              isVideoPlaying ? 'opacity-0' : 'opacity-100'
-            } group-hover:opacity-100`}
-          >
-            <div className={`p-4 rounded-full ${
-              config.isDarkMode 
-                ? 'bg-white/20 backdrop-blur-sm' 
-                : 'bg-black/20 backdrop-blur-sm'
-            }`}>
-              {isVideoPlaying ? (
-                <Pause size={32} className="text-white" />
-              ) : (
-                <Play size={32} className="text-white" />
-              )}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+    >
+      <Card className="h-full">
+        <div className="relative aspect-video overflow-hidden">
+          {!imageError && product.thumbnail_url ? (
+            <Image
+              src={product.thumbnail_url}
+              alt={product.name}
+              fill
+              className="object-cover transition-transform duration-300 hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <div className="text-gray-400 text-sm">Image non disponible</div>
             </div>
-          </button>
+          )}
+          <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+            <motion.div
+              className="opacity-0 hover:opacity-100 transition-opacity duration-300"
+              whileHover={{ scale: 1.1 }}
+            >
+              <div className="bg-white bg-opacity-90 rounded-full p-3">
+                <svg
+                  className="w-8 h-8 text-green-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            </motion.div>
+          </div>
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="p-6">
-        <h3 className={`font-bold text-xl mb-2 ${
-          config.isDarkMode ? 'text-white' : 'text-gray-900'
-        }`}>
-          {product.name}
-        </h3>
-        
-        <p className={`text-sm mb-4 line-clamp-2 ${
-          config.isDarkMode ? 'text-gray-300' : 'text-gray-600'
-        }`}>
-          {product.description}
-        </p>
-        
-        <div className="flex items-center justify-between">
-          <span className={`text-2xl font-bold ${
-            config.isDarkMode ? 'text-green-400' : 'text-green-600'
-          }`}>
-            {product.price.toFixed(2)} €
-          </span>
-          
-          <Link
-            href={`/produit/${product.slug}`}
-            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-              config.isDarkMode 
-                ? 'bg-green-600 text-white hover:bg-green-500' 
-                : 'bg-green-600 text-white hover:bg-green-500'
-            }`}
-          >
-            Voir détails
+        <CardContent className="pt-4">
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            {product.name}
+          </h3>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+            {product.description}
+          </p>
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-bold text-green-600">
+              {formatPrice(product.price)}
+            </span>
+          </div>
+        </CardContent>
+
+        <CardFooter className="pt-0">
+          <Link href={`/produits/${product.id}`} className="w-full">
+            <Button 
+              className="w-full"
+              size="lg"
+            >
+              Voir le produit
+            </Button>
           </Link>
-        </div>
-      </div>
-    </div>
+        </CardFooter>
+      </Card>
+    </motion.div>
   );
 }
+
+export default ProductCard;

@@ -1,41 +1,36 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { ShopConfigProvider } from '@/components/providers/ShopConfigProvider';
+import DebugPanel from '@/components/DebugPanel';
 
-const geist = Geist({
-  variable: "--font-geist",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "CBD Premium Boutique - Votre boutique de confiance",
-  description: "Découvrez notre sélection de produits CBD de qualité premium. Huiles, fleurs, gélules et crèmes pour votre bien-être quotidien.",
-  keywords: "CBD, chanvre, bien-être, huile CBD, fleurs CBD, gélules CBD, crème CBD",
-  authors: [{ name: "CBD Premium Boutique" }],
-  viewport: "width=device-width, initial-scale=1",
-  robots: "index, follow",
-  openGraph: {
-    title: "CBD Premium Boutique",
-    description: "Votre boutique de confiance pour des produits CBD de qualité premium",
-    type: "website",
-    locale: "fr_FR",
-  },
+  title: 'Ma Boutique CBD - Produits de qualité',
+  description: 'Découvrez notre sélection de produits CBD de qualité supérieure',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="fr" className={`${geist.variable} ${geistMono.variable}`}>
-      <body className="antialiased">
-        {children}
+    <html lang="fr">
+      <body className={inter.className}>
+        <ShopConfigProvider>
+          <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+            <DebugPanel isVisible={true} />
+          </div>
+        </ShopConfigProvider>
       </body>
     </html>
   );

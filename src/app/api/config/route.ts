@@ -1,28 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getShopConfig, saveShopConfig } from '@/lib/data';
+import { NextResponse } from 'next/server';
+import { supabase, mockData, isUsingMockData } from '@/lib/supabase';
 
 export async function GET() {
   try {
-    const config = getShopConfig();
-    return NextResponse.json({ success: true, data: config });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Erreur lors de la récupération de la configuration' },
-      { status: 500 }
-    );
-  }
-}
+    if (isUsingMockData()) {
+      // Utiliser les données mockées
+      return NextResponse.json(mockData.shopConfig);
+    }
 
-export async function PUT(request: NextRequest) {
-  try {
-    const configData = await request.json();
-    saveShopConfig(configData);
-    
-    return NextResponse.json({ success: true, data: configData });
+    // Utiliser Supabase si configuré
+    const { data, error } = await supabase
+      .from('shop_config')
+      .select('*')
+      .limit(1)
+      .single();
+
+    if (error) {
+      console.error('Erreur Supabase:', error);
+      return NextResponse.json(mockData.shopConfig);
+    }
+
+    return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Erreur lors de la sauvegarde de la configuration' },
-      { status: 500 }
-    );
+    console.error('Erreur API config:', error);
+    return NextResponse.json(mockData.shopConfig);
   }
 }

@@ -9,12 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/multer": "^2.0.0",
+    "@supabase/supabase-js": "^2.51.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.7.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.5",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.525.0",
-    "multer": "^2.0.1",
     "next": "15.3.5",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.60.0",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -22,11 +30,8 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript-eslint/eslint-plugin": "^8.37.0",
-    "@typescript-eslint/parser": "^8.37.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

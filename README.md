@@ -1,179 +1,255 @@
-# 🌿 CBD Premium Boutique
+# 🌿 Boutique CBD - Application E-commerce Moderne
 
-Une boutique en ligne moderne et responsive pour les produits CBD, construite avec Next.js 14, Tailwind CSS et optimisée pour le déploiement sur Vercel.
+Une boutique en ligne moderne et responsive pour la vente de produits CBD, développée avec Next.js 14, TypeScript et Tailwind CSS.
 
 ## ✨ Fonctionnalités
 
-### 🛍️ Boutique
-- **Page d'accueil** : Affichage des produits sous forme de cartes avec vidéos
-- **Pages de détail** : Vidéos intégrées, descriptions complètes, boutons de commande
-- **Design responsive** : Optimisé pour mobile, tablette et desktop
-- **Mode sombre/clair** : Basculement automatique selon la configuration
+### 🛍️ Boutique Frontend
+- **Page d'accueil moderne** avec présentation de la boutique
+- **Catalogue de produits** avec miniatures vidéo générées automatiquement
+- **Pages détail produit** avec vidéo complète et description
+- **Recherche et filtrage** des produits
+- **Design responsive** optimisé mobile et desktop
+- **Mode sombre/clair** configurable
+- **Fond personnalisable** (couleur ou image)
+- **Page réseaux sociaux** avec liens externes
 
-### 🔐 Administration
-- **Authentification simple** : Connexion par mot de passe
-- **Gestion des produits** : Ajout, modification, suppression
-- **Configuration de la boutique** : Nom, description, couleurs, mode sombre
-- **Gestion des médias** : Upload d'images et vidéos via URLs
-- **Liens sociaux** : Configuration des réseaux sociaux
+### 🔐 Panel d'Administration
+- **Authentification sécurisée** par mot de passe
+- **Gestion complète des produits** (CRUD)
+- **Upload de vidéos** avec génération automatique de miniatures
+- **Configuration de la boutique** (nom, thème, footer)
+- **Gestion des réseaux sociaux**
+- **Personnalisation du design**
 
-### 🎨 Personnalisation
-- **Thème personnalisable** : Couleurs, images de fond
-- **Mode sombre/clair** : Basculement automatique
-- **Footer configurable** : Texte et liens personnalisables
-- **SEO optimisé** : Métadonnées configurables
+### 🎥 Gestion Vidéo Avancée
+- **Upload automatique** vers Cloudinary
+- **Génération de miniatures** à partir des vidéos
+- **Optimisation automatique** de la qualité
+- **Support multi-formats** (MP4, WebM, etc.)
 
-## 🚀 Technologies
+## 🚀 Technologies Utilisées
 
-- **Next.js 14** : Framework React avec App Router
-- **TypeScript** : Typage statique pour la sécurité
-- **Tailwind CSS** : Framework CSS utilitaire
-- **Lucide React** : Icônes modernes
-- **JSON Storage** : Stockage des données en fichiers JSON
+- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS
+- **Animations**: Framer Motion
+- **Base de données**: Supabase (PostgreSQL)
+- **Stockage vidéo**: Cloudinary
+- **Authentification**: JWT + bcrypt
+- **Déploiement**: Vercel
 
-## 📦 Installation
+## 📦 Installation et Configuration
 
-1. **Cloner le projet**
+### 1. Cloner le projet
+
 ```bash
-git clone <repository-url>
+git clone [URL_DU_REPO]
 cd cbd-boutique
-```
-
-2. **Installer les dépendances**
-```bash
 npm install
 ```
 
-3. **Lancer en développement**
+### 2. Configuration de l'environnement
+
+Copiez le fichier `.env.local` et configurez vos variables :
+
+```bash
+cp .env.local.example .env.local
+```
+
+### 3. Configuration Supabase
+
+1. Créez un projet sur [Supabase](https://supabase.com)
+2. Copiez l'URL et la clé API anonyme dans `.env.local`
+3. Exécutez le SQL d'initialisation dans l'éditeur SQL de Supabase :
+
+```sql
+-- Copiez le contenu de src/lib/supabase.ts (section initTables)
+```
+
+### 4. Configuration Cloudinary
+
+1. Créez un compte sur [Cloudinary](https://cloudinary.com)
+2. Récupérez vos credentials dans le dashboard
+3. Ajoutez-les dans `.env.local`:
+
+```env
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=votre_cloud_name
+CLOUDINARY_API_KEY=votre_api_key
+CLOUDINARY_API_SECRET=votre_api_secret
+```
+
+### 5. Configuration du mot de passe administrateur
+
+Générez le hash du mot de passe admin :
+
+```bash
+node scripts/generate-admin-password.js
+```
+
+Copiez le hash généré dans `.env.local`:
+
+```env
+ADMIN_PASSWORD_HASH=le_hash_généré
+JWT_SECRET=votre_secret_jwt_securise
+```
+
+### 6. Lancement en développement
+
 ```bash
 npm run dev
 ```
 
-4. **Ouvrir dans le navigateur**
-```
-http://localhost:3000
-```
+L'application sera accessible sur [http://localhost:3000](http://localhost:3000)
 
-## 🔧 Configuration
+## 🌐 Déploiement sur Vercel
 
-### Configuration initiale
-Le mot de passe admin par défaut est `admin123`. Vous pouvez le modifier dans `src/data/config.json`.
+### 1. Préparation du repository
 
-### Structure des données
-- `src/data/products.json` : Liste des produits
-- `src/data/config.json` : Configuration de la boutique
-
-### Ajout de produits
-1. Accédez à `/admin`
-2. Connectez-vous avec le mot de passe
-3. Cliquez sur "Ajouter un produit"
-4. Remplissez les informations :
-   - Nom du produit
-   - Description
-   - Prix
-   - URL de l'image
-   - URL de la vidéo
-   - Lien de commande
-   - Slug (URL unique)
-
-## 🎯 Déploiement sur Vercel
-
-### 1. Préparation
 ```bash
-# Build du projet
-npm run build
-
-# Test en production
-npm start
+git add .
+git commit -m "Initial commit"
+git push origin main
 ```
 
-### 2. Déploiement automatique
-1. Connectez votre repository GitHub à Vercel
-2. Vercel détectera automatiquement Next.js
-3. Le déploiement se fera automatiquement à chaque push
+### 2. Déploiement
 
-### 3. Variables d'environnement (optionnel)
-Si nécessaire, ajoutez des variables d'environnement dans Vercel :
-- `NEXT_PUBLIC_SITE_URL` : URL de votre site
-- `ADMIN_PASSWORD` : Mot de passe admin (remplace le fichier config)
+1. Connectez-vous sur [Vercel](https://vercel.com)
+2. Importez votre repository GitHub
+3. Configurez les variables d'environnement dans les settings Vercel
+4. Déployez automatiquement
 
-## 📱 Responsive Design
+### 3. Variables d'environnement Vercel
 
-Le site est optimisé pour :
-- **Mobile** : < 768px
-- **Tablette** : 768px - 1024px
-- **Desktop** : > 1024px
+Ajoutez toutes les variables de `.env.local` dans les settings Vercel :
 
-## 🎨 Personnalisation
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+- `ADMIN_PASSWORD_HASH`
+- `JWT_SECRET`
 
-### Couleurs
-Modifiez les couleurs dans `tailwind.config.js` ou utilisez les classes Tailwind directement.
+## 📖 Guide d'utilisation
 
-### Images et vidéos
-- Utilisez des URLs externes pour les médias
-- Formats supportés : JPG, PNG, MP4, WebM
-- Taille recommandée : 1920x1080 pour les vidéos
+### Accès Administration
 
-### Police
-La police Geist est utilisée par défaut. Vous pouvez la changer dans `src/app/layout.tsx`.
+1. Rendez-vous sur `/admin`
+2. Utilisez le mot de passe configuré (par défaut: `admin123`)
+3. Accédez au dashboard d'administration
 
-## 🔒 Sécurité
+### Gestion des Produits
 
-- Authentification simple par mot de passe
-- Validation des données côté serveur
-- Protection contre les injections
-- Headers de sécurité automatiques
+1. **Ajouter un produit** :
+   - Nom, description, prix
+   - Upload d'une vidéo (génération automatique de miniature)
+   - Lien de commande externe
 
-## 📈 Performance
+2. **Modifier un produit** :
+   - Édition de tous les champs
+   - Remplacement de la vidéo
+   - Activation/désactivation
 
-- **Images optimisées** : Next.js Image component
-- **Lazy loading** : Chargement différé des médias
-- **Code splitting** : Chargement à la demande
-- **SEO optimisé** : Métadonnées dynamiques
+### Configuration de la Boutique
 
-## 🛠️ Développement
+- **Nom de la boutique** : Modifiable dans l'admin
+- **Thème** : Mode clair/sombre
+- **Fond** : Couleur unie ou image uploadée
+- **Footer** : Texte personnalisable
 
-### Structure du projet
+## 📁 Structure du Projet
+
 ```
-src/
-├── app/                 # Pages Next.js 14
-│   ├── admin/          # Panel d'administration
-│   ├── api/            # API routes
-│   ├── produit/        # Pages de détail
-│   └── globals.css     # Styles globaux
-├── components/         # Composants réutilisables
-├── data/              # Données JSON
-├── lib/               # Utilitaires
-└── types/             # Types TypeScript
+cbd-boutique/
+├── src/
+│   ├── app/                    # Pages Next.js App Router
+│   │   ├── api/               # API Routes
+│   │   ├── admin/             # Pages admin
+│   │   ├── produits/          # Pages produits
+│   │   └── globals.css        # Styles globaux
+│   ├── components/            # Composants React
+│   │   ├── ui/               # Composants UI réutilisables
+│   │   └── providers/        # Context providers
+│   ├── lib/                  # Utilitaires et configuration
+│   └── types/                # Types TypeScript
+├── scripts/                  # Scripts utilitaires
+└── public/                   # Fichiers statiques
 ```
 
-### Scripts disponibles
+## 🛠️ Scripts Disponibles
+
 ```bash
-npm run dev          # Développement
-npm run build        # Build production
-npm run start        # Serveur production
+npm run dev          # Lancement en développement
+npm run build        # Build de production
+npm run start        # Démarrage du serveur de production
 npm run lint         # Vérification ESLint
 ```
 
-## 🤝 Contribution
+## 🔧 Personnalisation
 
-1. Fork le projet
-2. Créez une branche feature (`git checkout -b feature/AmazingFeature`)
-3. Commit vos changements (`git commit -m 'Add AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrez une Pull Request
+### Couleurs et Thème
+
+Modifiez les couleurs dans `src/app/globals.css` et les composants Tailwind.
+
+### Ajout de Fonctionnalités
+
+1. Créez de nouveaux composants dans `src/components/`
+2. Ajoutez des API routes dans `src/app/api/`
+3. Utilisez TypeScript pour la sécurité des types
+
+## 📱 Responsive Design
+
+L'application est optimisée pour :
+- 📱 Mobile (320px+)
+- 📱 Tablette (768px+)
+- 💻 Desktop (1024px+)
+- 🖥️ Large Desktop (1280px+)
+
+## 🔒 Sécurité
+
+- **Authentification JWT** pour l'admin
+- **Validation des données** côté serveur
+- **Protection CSRF** native Next.js
+- **Gestion sécurisée des fichiers** avec Cloudinary
+- **Variables d'environnement** pour les secrets
+
+## 🐛 Dépannage
+
+### Problèmes Courants
+
+1. **Erreur de connexion Supabase** :
+   - Vérifiez les URLs et clés API
+   - Contrôlez les policies RLS
+
+2. **Upload vidéo échoue** :
+   - Vérifiez les credentials Cloudinary
+   - Contrôlez la taille des fichiers (max 100MB)
+
+3. **Authentification admin** :
+   - Régénérez le hash du mot de passe
+   - Vérifiez la variable JWT_SECRET
+
+### Logs et Debug
+
+```bash
+# Logs Vercel
+vercel logs
+
+# Debug local
+npm run dev
+```
+
+## 📞 Support
+
+Pour toute question ou problème :
+1. Consultez la documentation
+2. Vérifiez les logs d'erreur
+3. Contactez l'équipe de développement
 
 ## 📄 Licence
 
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
-## 🆘 Support
-
-Pour toute question ou problème :
-1. Vérifiez la documentation
-2. Consultez les issues GitHub
-3. Contactez l'équipe de développement
-
 ---
 
-**Développé avec ❤️ pour la communauté CBD**
+**🌿 Créé avec ❤️ pour les boutiques CBD modernes**

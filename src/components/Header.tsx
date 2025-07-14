@@ -1,124 +1,137 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ShopConfig } from '@/types';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
+import { useShopConfig } from '@/components/providers/ShopConfigProvider';
 
-interface HeaderProps {
-  config: ShopConfig;
-  onToggleDarkMode: () => void;
-}
-
-export default function Header({ config, onToggleDarkMode }: HeaderProps) {
+export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { config } = useShopConfig();
+
+  const shopName = config?.shop_name || 'Ma Boutique CBD';
+  const isDarkMode = config?.dark_mode || false;
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      config.isDarkMode 
-        ? 'bg-gray-900/95 backdrop-blur-sm border-b border-gray-800' 
-        : 'bg-white/95 backdrop-blur-sm border-b border-gray-200'
-    }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className={`sticky top-0 z-50 backdrop-blur-md ${
+      isDarkMode 
+        ? 'bg-gray-900/90 text-white' 
+        : 'bg-white/90 text-gray-900'
+    } border-b border-gray-200/20`}>
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className={`w-8 h-8 rounded-full ${
-              config.isDarkMode ? 'bg-green-500' : 'bg-green-600'
-            } flex items-center justify-center`}>
-              <span className="text-white font-bold text-sm">CBD</span>
-            </div>
-            <span className={`font-bold text-xl ${
-              config.isDarkMode ? 'text-white' : 'text-gray-900'
-            }`}>
-              {config.name}
-            </span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <Link 
               href="/" 
-              className={`transition-colors duration-200 ${
-                config.isDarkMode 
-                  ? 'text-gray-300 hover:text-white' 
-                  : 'text-gray-700 hover:text-gray-900'
-              }`}
+              className="text-2xl font-bold text-green-600 hover:text-green-700 transition-colors"
+            >
+              {shopName}
+            </Link>
+          </motion.div>
+
+          {/* Navigation Desktop */}
+          <motion.div
+            className="hidden md:flex items-center space-x-8"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <Link 
+              href="/" 
+              className="hover:text-green-600 transition-colors font-medium"
             >
               Accueil
             </Link>
             <Link 
-              href="/admin" 
-              className={`transition-colors duration-200 ${
-                config.isDarkMode 
-                  ? 'text-gray-300 hover:text-white' 
-                  : 'text-gray-700 hover:text-gray-900'
-              }`}
+              href="/produits" 
+              className="hover:text-green-600 transition-colors font-medium"
             >
-              Admin
+              Produits
             </Link>
-          </nav>
-
-          {/* Actions */}
-          <div className="flex items-center space-x-4">
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={onToggleDarkMode}
-              className={`p-2 rounded-lg transition-all duration-200 ${
-                config.isDarkMode 
-                  ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
+            <Link 
+              href="/reseaux-sociaux" 
+              className="hover:text-green-600 transition-colors font-medium"
             >
-              {config.isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
+              Réseaux sociaux
+            </Link>
+            <Link href="/admin">
+              <Button variant="outline" size="sm">
+                Administration
+              </Button>
+            </Link>
+          </motion.div>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`md:hidden p-2 rounded-lg transition-all duration-200 ${
-                config.isDarkMode 
-                  ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
+          {/* Menu Mobile Button */}
+          <motion.button
+            className="md:hidden p-2"
+            onClick={toggleMenu}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {isMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </motion.button>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Menu Mobile */}
         {isMenuOpen && (
-          <div className={`md:hidden py-4 border-t ${
-            config.isDarkMode ? 'border-gray-800' : 'border-gray-200'
-          }`}>
-            <nav className="flex flex-col space-y-4">
+          <motion.div
+            className="md:hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 backdrop-blur-sm rounded-lg mt-2 border border-gray-200/20">
               <Link 
                 href="/" 
-                className={`transition-colors duration-200 ${
-                  config.isDarkMode 
-                    ? 'text-gray-300 hover:text-white' 
-                    : 'text-gray-700 hover:text-gray-900'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
+                className="block px-3 py-2 text-base font-medium hover:text-green-600 transition-colors"
+                onClick={toggleMenu}
               >
                 Accueil
               </Link>
               <Link 
-                href="/admin" 
-                className={`transition-colors duration-200 ${
-                  config.isDarkMode 
-                    ? 'text-gray-300 hover:text-white' 
-                    : 'text-gray-700 hover:text-gray-900'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
+                href="/produits" 
+                className="block px-3 py-2 text-base font-medium hover:text-green-600 transition-colors"
+                onClick={toggleMenu}
               >
-                Admin
+                Produits
               </Link>
-            </nav>
-          </div>
+              <Link 
+                href="/reseaux-sociaux" 
+                className="block px-3 py-2 text-base font-medium hover:text-green-600 transition-colors"
+                onClick={toggleMenu}
+              >
+                Réseaux sociaux
+              </Link>
+              <Link 
+                href="/admin" 
+                className="block px-3 py-2"
+                onClick={toggleMenu}
+              >
+                <Button variant="outline" size="sm" className="w-full">
+                  Administration
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
         )}
-      </div>
+      </nav>
     </header>
   );
 }
+
+export default Header;
