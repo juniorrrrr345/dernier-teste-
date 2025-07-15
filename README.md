@@ -1,179 +1,168 @@
-# 🌿 CBD Premium Boutique
+# API Python pour Replit et Vercel
 
-Une boutique en ligne moderne et responsive pour les produits CBD, construite avec Next.js 14, Tailwind CSS et optimisée pour le déploiement sur Vercel.
+Ce projet est une API Python simple qui peut être développée sur Replit et déployée sur Vercel.
 
-## ✨ Fonctionnalités
+## 🚀 Fonctionnalités
 
-### 🛍️ Boutique
-- **Page d'accueil** : Affichage des produits sous forme de cartes avec vidéos
-- **Pages de détail** : Vidéos intégrées, descriptions complètes, boutons de commande
-- **Design responsive** : Optimisé pour mobile, tablette et desktop
-- **Mode sombre/clair** : Basculement automatique selon la configuration
+- API REST avec Flask
+- Endpoints pour différents services
+- Compatible avec Replit et Vercel
+- Configuration automatique pour le déploiement
 
-### 🔐 Administration
-- **Authentification simple** : Connexion par mot de passe
-- **Gestion des produits** : Ajout, modification, suppression
-- **Configuration de la boutique** : Nom, description, couleurs, mode sombre
-- **Gestion des médias** : Upload d'images et vidéos via URLs
-- **Liens sociaux** : Configuration des réseaux sociaux
+## 📋 Endpoints disponibles
 
-### 🎨 Personnalisation
-- **Thème personnalisable** : Couleurs, images de fond
-- **Mode sombre/clair** : Basculement automatique
-- **Footer configurable** : Texte et liens personnalisables
-- **SEO optimisé** : Métadonnées configurables
+### GET /
+Page d'accueil avec informations de base
 
-## 🚀 Technologies
+### GET /api/hello?name=Nom
+Salutation personnalisée
 
-- **Next.js 14** : Framework React avec App Router
-- **TypeScript** : Typage statique pour la sécurité
-- **Tailwind CSS** : Framework CSS utilitaire
-- **Lucide React** : Icônes modernes
-- **JSON Storage** : Stockage des données en fichiers JSON
+### GET /api/weather
+Informations météo simulées
 
-## 📦 Installation
+### GET /api/users
+Liste des utilisateurs
 
-1. **Cloner le projet**
+### POST /api/users
+Créer un nouvel utilisateur
+
+## 🛠️ Installation et développement
+
+### Sur Replit
+
+1. Clonez ce repository dans votre Replit
+2. Les dépendances s'installeront automatiquement
+3. Cliquez sur "Run" pour démarrer le serveur
+
+### En local
+
 ```bash
-git clone <repository-url>
-cd cbd-boutique
+# Installer les dépendances
+pip install -r requirements.txt
+
+# Démarrer le serveur
+python main.py
 ```
 
-2. **Installer les dépendances**
-```bash
-npm install
-```
+Le serveur sera accessible sur `http://localhost:8080`
 
-3. **Lancer en développement**
-```bash
-npm run dev
-```
+## 🚀 Déploiement sur Vercel
 
-4. **Ouvrir dans le navigateur**
+### Prérequis
+
+1. Compte Vercel
+2. CLI Vercel installé (`npm i -g vercel`)
+
+### Étapes de déploiement
+
+1. **Connectez-vous à Vercel :**
+   ```bash
+   vercel login
+   ```
+
+2. **Déployez le projet :**
+   ```bash
+   vercel
+   ```
+
+3. **Pour les déploiements suivants :**
+   ```bash
+   vercel --prod
+   ```
+
+### Configuration Vercel
+
+Le fichier `vercel.json` configure automatiquement :
+- Le runtime Python 3.9
+- Les routes vers l'API
+- La structure de déploiement
+
+## 📁 Structure du projet
+
 ```
-http://localhost:3000
+├── api/
+│   └── index.py          # Point d'entrée pour Vercel
+├── main.py               # Point d'entrée pour Replit/local
+├── requirements.txt       # Dépendances Python
+├── vercel.json           # Configuration Vercel
+├── .replit               # Configuration Replit
+├── pyproject.toml        # Configuration Python moderne
+└── README.md             # Ce fichier
 ```
 
 ## 🔧 Configuration
 
-### Configuration initiale
-Le mot de passe admin par défaut est `admin123`. Vous pouvez le modifier dans `src/data/config.json`.
+### Variables d'environnement
 
-### Structure des données
-- `src/data/products.json` : Liste des produits
-- `src/data/config.json` : Configuration de la boutique
+Créez un fichier `.env` pour les variables locales :
 
-### Ajout de produits
-1. Accédez à `/admin`
-2. Connectez-vous avec le mot de passe
-3. Cliquez sur "Ajouter un produit"
-4. Remplissez les informations :
-   - Nom du produit
-   - Description
-   - Prix
-   - URL de l'image
-   - URL de la vidéo
-   - Lien de commande
-   - Slug (URL unique)
+```env
+FLASK_ENV=development
+PORT=8080
+```
 
-## 🎯 Déploiement sur Vercel
+### Personnalisation
 
-### 1. Préparation
+1. **Ajouter de nouveaux endpoints :** Modifiez `api/index.py`
+2. **Changer la configuration :** Modifiez `vercel.json`
+3. **Ajouter des dépendances :** Modifiez `requirements.txt`
+
+## 🧪 Tests
+
 ```bash
-# Build du projet
-npm run build
+# Installer les dépendances de développement
+pip install -e ".[dev]"
 
-# Test en production
-npm start
+# Lancer les tests
+pytest
+
+# Formater le code
+black .
+
+# Vérifier la qualité du code
+flake8 .
 ```
 
-### 2. Déploiement automatique
-1. Connectez votre repository GitHub à Vercel
-2. Vercel détectera automatiquement Next.js
-3. Le déploiement se fera automatiquement à chaque push
+## 📝 Exemples d'utilisation
 
-### 3. Variables d'environnement (optionnel)
-Si nécessaire, ajoutez des variables d'environnement dans Vercel :
-- `NEXT_PUBLIC_SITE_URL` : URL de votre site
-- `ADMIN_PASSWORD` : Mot de passe admin (remplace le fichier config)
+### Test de l'API
 
-## 📱 Responsive Design
-
-Le site est optimisé pour :
-- **Mobile** : < 768px
-- **Tablette** : 768px - 1024px
-- **Desktop** : > 1024px
-
-## 🎨 Personnalisation
-
-### Couleurs
-Modifiez les couleurs dans `tailwind.config.js` ou utilisez les classes Tailwind directement.
-
-### Images et vidéos
-- Utilisez des URLs externes pour les médias
-- Formats supportés : JPG, PNG, MP4, WebM
-- Taille recommandée : 1920x1080 pour les vidéos
-
-### Police
-La police Geist est utilisée par défaut. Vous pouvez la changer dans `src/app/layout.tsx`.
-
-## 🔒 Sécurité
-
-- Authentification simple par mot de passe
-- Validation des données côté serveur
-- Protection contre les injections
-- Headers de sécurité automatiques
-
-## 📈 Performance
-
-- **Images optimisées** : Next.js Image component
-- **Lazy loading** : Chargement différé des médias
-- **Code splitting** : Chargement à la demande
-- **SEO optimisé** : Métadonnées dynamiques
-
-## 🛠️ Développement
-
-### Structure du projet
-```
-src/
-├── app/                 # Pages Next.js 14
-│   ├── admin/          # Panel d'administration
-│   ├── api/            # API routes
-│   ├── produit/        # Pages de détail
-│   └── globals.css     # Styles globaux
-├── components/         # Composants réutilisables
-├── data/              # Données JSON
-├── lib/               # Utilitaires
-└── types/             # Types TypeScript
-```
-
-### Scripts disponibles
 ```bash
-npm run dev          # Développement
-npm run build        # Build production
-npm run start        # Serveur production
-npm run lint         # Vérification ESLint
+# Test de la page d'accueil
+curl https://votre-projet.vercel.app/
+
+# Test de l'endpoint hello
+curl "https://votre-projet.vercel.app/api/hello?name=Alice"
+
+# Test de l'endpoint users
+curl https://votre-projet.vercel.app/api/users
+
+# Créer un utilisateur
+curl -X POST https://votre-projet.vercel.app/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Nouveau", "email": "nouveau@example.com"}'
 ```
 
 ## 🤝 Contribution
 
 1. Fork le projet
-2. Créez une branche feature (`git checkout -b feature/AmazingFeature`)
-3. Commit vos changements (`git commit -m 'Add AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
+2. Créez une branche pour votre fonctionnalité
+3. Committez vos changements
+4. Poussez vers la branche
 5. Ouvrez une Pull Request
 
 ## 📄 Licence
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
 
 ## 🆘 Support
 
-Pour toute question ou problème :
-1. Vérifiez la documentation
-2. Consultez les issues GitHub
-3. Contactez l'équipe de développement
+Si vous rencontrez des problèmes :
+
+1. Vérifiez que toutes les dépendances sont installées
+2. Consultez les logs Vercel pour les erreurs de déploiement
+3. Testez en local avant de déployer
 
 ---
 
-**Développé avec ❤️ pour la communauté CBD**
+**Note :** Ce projet est optimisé pour fonctionner à la fois sur Replit (développement) et Vercel (production).
