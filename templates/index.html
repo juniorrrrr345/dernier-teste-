@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="filters">
+    <div class="filter-group">
+        <label for="category-filter">Catégorie</label>
+        <select id="category-filter" onchange="filterProducts()">
+            <option value="all">Toutes les catégories</option>
+            {% for category in config.categories %}
+            <option value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label for="farm-filter">Provenance</label>
+        <select id="farm-filter" onchange="filterProducts()">
+            <option value="all">Toutes les provenances</option>
+            {% for farm in config.farms %}
+            <option value="{{ farm }}">{{ farm }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="welcome-section title-effect-{{ config.get('title_effect', 'none') }} text-animation-{{ config.get('text_animation', 'none') }}">
+    <h1>{{ config.site_title }}</h1>
+    <pre class="welcome-message">{{ config.welcome_message }}</pre>
+</div>
+
+<div class="products-grid card-animation-{{ config.get('card_animation', 'none') }}" id="products-grid">
+    {% for product in products %}
+    <div class="product-card" data-category="{{ product.category }}" data-farm="{{ product.farm }}" style="display: none;">
+        {% if product.video %}
+        <!-- Afficher la première frame de la vidéo comme prévisualisation -->
+        <video class="product-image" preload="metadata" muted>
+            <source src="/static/{{ product.video }}#t=0.1" type="video/mp4">
+            <source src="/static/{{ product.video }}#t=0.1" type="video/mov">
+            <source src="/static/{{ product.video }}#t=0.1" type="video/webm">
+        </video>
+        {% elif product.image %}
+        <img src="/static/{{ product.image }}" alt="{{ product.name }}" class="product-image">
+        {% endif %}
+
+        <div class="product-info">
+            <h3 class="product-name">{{ product.name }}</h3>
+            <p class="product-category">{{ product.category }} - {{ product.farm }}</p>
+
+            {% if product.prices %}
+            <div class="product-prices">
+                {% for price in product.prices %}
+                <div class="price-item">
+                    <span>{{ price.quantity }} {{ price.unit }}</span>
+                    <span style="font-weight: 600; color: var(--secondary-color);">{{ "%.2f"|format(price.price) }}€</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div style="margin-top: 1rem;">
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn" style="width: 100%; margin-bottom: 0.5rem;">
+                    <i class="fas fa-eye"></i> Voir détails
+                </a>
+
+                {% if product.order_link %}
+                <a href="{{ product.order_link }}" target="_blank" class="btn btn-secondary" style="width: 100%;">
+                    <i class="fas fa-shopping-cart"></i> Commander
+                </a>
+                {% elif config.global_order_link %}
+                <a href="{{ config.global_order_link }}" target="_blank" class="btn btn-secondary" style="width: 100%;">
+                    <i class="fas fa-shopping-cart"></i> Commander
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="no-products" id="default-message">
+    <div style="background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); border-radius: 15px; padding: 2rem; margin-top: 2rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <p style="text-align: center; color: var(--accent-color); font-size: 1rem; margin: 0;">
+            Sélectionnez une catégorie ou une provenance pour voir nos produits
+        </p>
+    </div>
+</div>
+
+<div class="no-products" id="no-products-message" style="display: none;">
+    <p>{{ config.get('no_products_text', 'Aucun produit disponible pour cette sélection.') }}</p>
+</div>
+
+<script>
+    function filterProducts() {
+        const categoryFilter = document.getElementById('category-filter').value;
+        const farmFilter = document.getElementById('farm-filter').value;
+        const productCards = document.querySelectorAll('.product-card');
+        const defaultMessage = document.getElementById('default-message');
+        const noProductsMessage = document.getElementById('no-products-message');
+
+        let visibleCount = 0;
+
+        // Si aucun filtre n'est sélectionné, masquer tous les produits
+        if (categoryFilter === 'all' && farmFilter === 'all') {
+            productCards.forEach(card => {
+                card.style.display = 'none';
+            });
+            defaultMessage.style.display = 'block';
+            noProductsMessage.style.display = 'none';
+            return;
+        }
+
+        // Afficher/masquer les produits selon les filtres
+        productCards.forEach(card => {
+            const category = card.getAttribute('data-category');
+            const farm = card.getAttribute('data-farm');
+
+            const showCard = (categoryFilter === 'all' || category === categoryFilter) &&
+                            (farmFilter === 'all' || farm === farmFilter);
+
+            if (showCard) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Gérer l'affichage des messages
+        if (visibleCount === 0) {
+            // Aucun produit trouvé - afficher le message d'erreur
+            defaultMessage.style.display = 'none';
+            noProductsMessage.style.display = 'block';
+        } else {
+            // Des produits sont visibles - masquer tous les messages
+            defaultMessage.style.display = 'none';
+            noProductsMessage.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const categorySelect = document.getElementById('category-filter');
+        const farmSelect = document.getElementById('farm-filter');
+
+        if (categorySelect) {
+            categorySelect.addEventListener('change', filterProducts);
+        }
+        if (farmSelect) {
+            farmSelect.addEventListener('change', filterProducts);
+        }
+
+        // Initialiser l'affichage - masquer tous les produits par défaut
+        hideAllProducts();
+    });
+
+    function hideAllProducts() {
+        const productCards = document.querySelectorAll('.product-card');
+        const defaultMessage = document.getElementById('default-message');
+        const noProductsMessage = document.getElementById('no-products-message');
+
+        // Masquer tous les produits
+        productCards.forEach(card => {
+            card.style.display = 'none';
+        });
+
+        // Afficher le message par défaut
+        defaultMessage.style.display = 'block';
+        noProductsMessage.style.display = 'none';
+    }
+</script>
+
+<style>
+.filters {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.filter-group select {
+    padding: 0.75rem;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.filter-group select:hover,
+.filter-group select:focus {
+    border-color: var(--secondary-color);
+    background: rgba(255,255,255,0.2);
+    outline: none;
+}
+
+.welcome-section {
+    padding: 2rem 0 1rem 0;
+    margin-bottom: 1rem;
+}
+
+.welcome-message {
+    font-family: var(--font-family);
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: #FFFFFF;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
+    text-align: center;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.product-card {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.product-image[controls] {
+    pointer-events: none;
+}
+
+.product-info {
+    text-align: center;
+}
+
+.product-name {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.product-category {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.product-prices {
+    margin-bottom: 1rem;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.price-item:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .filters {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+        gap: 0.8rem;
+    }
+
+    .filter-group select {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .welcome-section {
+        padding: 1.5rem 0 1rem 0;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+}
+</style>
+{% endblock %}

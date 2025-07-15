@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier Produit - {{ config.site_title }}{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <h2 style="font-size: 1.3rem;">Modifier le produit</h2>
+    
+    <form method="POST" action="{{ url_for('update_product', product_id=product.id) }}" enctype="multipart/form-data">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="name">Nom du produit :</label>
+                <input type="text" id="name" name="name" value="{{ product.name }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Catégorie :</label>
+                <select id="category" name="category" required>
+                    {% for category in config.categories %}
+                    <option value="{{ category }}" {% if product.category == category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="farm">Provenance :</label>
+                <select id="farm" name="farm" required>
+                    {% for farm in config.farms %}
+                    <option value="{{ farm }}" {% if product.farm == farm %}selected{% endif %}>{{ farm }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description :</label>
+            <textarea id="description" name="description" rows="4">{{ product.description }}</textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="image">Nouvelle image (optionnel) :</label>
+                <input type="file" id="image" name="image" accept="image/*">
+                {% if product.image %}
+                <small>Image actuelle : <img src="/static/{{ product.image }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-left: 10px;"></small>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="video">Nouvelle vidéo (optionnel) :</label>
+                <input type="file" id="video" name="video" accept="video/*">
+                {% if product.video %}
+                <small>Vidéo actuelle définie</small>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="order_link">Lien de commande spécifique :</label>
+            <input type="url" id="order_link" name="order_link" value="{{ product.order_link }}" placeholder="https://...">
+        </div>
+
+        <h3 style="color: var(--secondary-color); margin: 2rem 0 1rem 0;">Prix multiples</h3>
+        <div id="prices-container">
+            {% for price in product.prices %}
+            <div class="price-inputs">
+                <div class="price-row">
+                    <div>
+                        <label>Quantité :</label>
+                        <input type="text" name="quantity[]" value="{{ price.quantity }}" required>
+                    </div>
+                    <div>
+                        <label>Unité :</label>
+                        <input type="text" name="unit[]" value="{{ price.unit }}" required>
+                    </div>
+                    <div>
+                        <label>Prix (€) :</label>
+                        <input type="number" name="price[]" step="0.01" value="{{ price.price }}" required>
+                    </div>
+                    <div>
+                        <button type="button" onclick="removePrice(this)" class="btn btn-danger" style="padding: 5px 10px;">-</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" onclick="addPrice()" class="btn btn-secondary">Ajouter un prix</button>
+
+        <h3 style="color: var(--secondary-color); margin: 2rem 0 1rem 0;">Réseaux sociaux du produit</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="product_instagram">Instagram :</label>
+                <input type="url" id="product_instagram" name="product_instagram" value="{{ product.social_links.instagram if product.social_links else '' }}" placeholder="https://instagram.com/...">
+            </div>
+
+            <div class="form-group">
+                <label for="product_facebook">Facebook :</label>
+                <input type="url" id="product_facebook" name="product_facebook" value="{{ product.social_links.facebook if product.social_links else '' }}" placeholder="https://facebook.com/...">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="product_twitter">Twitter :</label>
+                <input type="url" id="product_twitter" name="product_twitter" value="{{ product.social_links.twitter if product.social_links else '' }}" placeholder="https://twitter.com/...">
+            </div>
+
+            <div class="form-group">
+                <label for="product_tiktok">TikTok :</label>
+                <input type="url" id="product_tiktok" name="product_tiktok" value="{{ product.social_links.tiktok if product.social_links else '' }}" placeholder="https://tiktok.com/@...">
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn">Sauvegarder</button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function addPrice() {
+    const container = document.getElementById('prices-container');
+    const priceDiv = document.createElement('div');
+    priceDiv.className = 'price-inputs';
+    priceDiv.innerHTML = `
+        <div class="price-row">
+            <div>
+                <label>Quantité :</label>
+                <input type="text" name="quantity[]" placeholder="3" required>
+            </div>
+            <div>
+                <label>Unité :</label>
+                <input type="text" name="unit[]" placeholder="g" required>
+            </div>
+            <div>
+                <label>Prix (€) :</label>
+                <input type="number" name="price[]" step="0.01" placeholder="25.00" required>
+            </div>
+            <div>
+                <button type="button" onclick="removePrice(this)" class="btn btn-danger" style="padding: 5px 10px;">-</button>
+            </div>
+        </div>
+    `;
+    container.appendChild(priceDiv);
+}
+
+function removePrice(button) {
+    const priceInputs = button.closest('.price-inputs');
+    priceInputs.remove();
+}
+</script>
+{% endblock %}

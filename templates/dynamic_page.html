@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_content.title }} - {{ config.site_title }}{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="product-detail-content">
+        <div class="product-detail-info" style="text-align: center; width: 100%;">
+            <h1>{{ page_content.title }}</h1>
+
+            <div class="product-detail-description" style="line-height: 1.7; font-size: 1.05rem; text-align: justify; margin: 0 auto; max-width: 800px;">
+                <div style="white-space: pre-line; word-wrap: break-word;">{{ page_content.content }}</div>
+            </div>
+
+            {% if page_content.social_links %}
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">📱 Réseaux sociaux</h3>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    {% for social in page_content.social_links %}
+                    <a href="{{ social.url }}" target="_blank" class="btn btn-secondary" style="padding: 10px 20px;">
+                        {{ social.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+    <a href="{{ url_for('index') }}" class="btn" style="background: #000000; color: #FFFFFF; border: 2px solid #333333; padding: 8px 16px; font-size: 0.9rem;">
+        {{ config.get('back_home_text', '🏠 Accueil') }}
+    </a>
+</div>
+{% endblock %}

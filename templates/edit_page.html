@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier Page - {{ config.site_title }}{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <h2 style="font-size: 1.3rem;">Modifier la page "{{ page_content.title }}"</h2>
+    
+    <form method="POST" action="{{ url_for('update_page', page_name=page_name) }}">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="page_title">Titre affiché :</label>
+                <input type="text" id="page_title" name="page_title" value="{{ page_content.title }}" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="page_content">Contenu de la page :</label>
+            <textarea id="page_content" name="page_content" required style="height: 200px;">{{ page_content.content }}</textarea>
+        </div>
+
+        <h3 style="color: var(--secondary-color); margin: 1.5rem 0 1rem 0;">Réseaux sociaux spécifiques à cette page</h3>
+        <div id="page-social-links">
+            {% for social in page_content.social_links %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nom du réseau :</label>
+                    <input type="text" name="page_social_name[]" value="{{ social.name }}" placeholder="ex: Instagram, Signal">
+                </div>
+                <div class="form-group">
+                    <label>URL :</label>
+                    <input type="url" name="page_social_url[]" value="{{ social.url }}" placeholder="https://...">
+                </div>
+                <div style="display: flex; align-items: end;">
+                    <button type="button" onclick="removePageSocialLink(this)" class="btn btn-danger" style="padding: 5px 10px;">-</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" onclick="addPageSocialLink()" class="btn btn-secondary" style="margin-bottom: 1rem;">Ajouter un réseau social</button>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn">Sauvegarder</button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function addPageSocialLink() {
+    const container = document.getElementById('page-social-links');
+    const div = document.createElement('div');
+    div.className = 'form-row';
+    div.innerHTML = `
+        <div class="form-group">
+            <label>Nom du réseau :</label>
+            <input type="text" name="page_social_name[]" placeholder="ex: Instagram, Signal">
+        </div>
+        <div class="form-group">
+            <label>URL :</label>
+            <input type="url" name="page_social_url[]" placeholder="https://...">
+        </div>
+        <div style="display: flex; align-items: end;">
+            <button type="button" onclick="removePageSocialLink(this)" class="btn btn-danger" style="padding: 5px 10px;">-</button>
+        </div>
+    `;
+    container.appendChild(div);
+}
+
+function removePageSocialLink(button) {
+    button.closest('.form-row').remove();
+}
+</script>
+{% endblock %}

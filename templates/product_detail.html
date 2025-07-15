@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - {{ config.site_title }}{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="product-detail-content">
+        <div class="product-media">
+            {% if product.video %}
+            <video controls class="product-detail-video" volume="0.8" preload="metadata">
+                <source src="/static/{{ product.video }}" type="video/mp4">
+                Votre navigateur ne supporte pas la lecture de vidéos.
+            </video>
+            {% elif product.image %}
+            <!-- Afficher l'image seulement si pas de vidéo -->
+            <img src="/static/{{ product.image }}" alt="{{ product.name }}" class="product-detail-image">
+            {% endif %}
+        </div>
+
+        <div class="product-detail-info" style="text-align: center;">
+            <h1>{{ product.name }}</h1>
+            <p class="product-detail-category">{{ product.category }} - {{ product.farm }}</p>
+
+            <div class="product-detail-description" style="line-height: 1.7; font-size: 1.05rem; text-align: justify; margin: 0 auto; max-width: 600px;">
+                <div style="white-space: pre-line; word-wrap: break-word;">{{ product.description }}</div>
+            </div>
+
+            {% if product.prices %}
+            <div class="product-detail-prices">
+                <h3>{{ config.get('prices_title_text', 'Tarifs disponibles') }}</h3>
+                {% for price in product.prices %}
+                <div class="price-detail-item">
+                    <span><strong>{{ price.quantity }}{{ price.unit }}</strong></span>
+                    <span><strong>{{ price.price }}€</strong></span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div style="margin-top: 2rem;">
+                {% if product.order_link %}
+                <a href="{{ product.order_link }}" class="btn btn-secondary" target="_blank" style="font-size: 1rem; padding: 12px 25px; display: block;">
+                    {{ config.get('order_button_text', '🛒 Commander') }}
+                </a>
+                {% elif config.global_order_link %}
+                <a href="{{ config.global_order_link }}" class="btn btn-secondary" target="_blank" style="font-size: 1rem; padding: 12px 25px; display: block;">
+                    {{ config.get('order_button_text', '🛒 Commander') }}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+    <a href="{{ url_for('index') }}" class="btn" style="background: #000000; color: #FFFFFF; border: 2px solid #333333; padding: 8px 16px; font-size: 0.9rem;">
+        {{ config.get('back_home_text', '🏠 Accueil') }}
+    </a>
+</div>
+{% endblock %}

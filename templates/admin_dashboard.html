@@ -1,0 +1,541 @@
+{% extends "base.html" %}
+
+{% block title %}Administration - {{ config.site_title }}{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1 style="font-size: 1.5rem;">Panel Admin</h1>
+        <a href="{{ url_for('admin_logout') }}" class="btn btn-danger" style="padding: 8px 15px; font-size: 0.9rem;">Déconnexion</a>
+    </div>
+
+    <!-- Configuration du site -->
+    <div class="admin-section">
+        <h2 style="font-size: 1.3rem;">Configuration</h2>
+        <form method="POST" action="{{ url_for('update_config') }}" enctype="multipart/form-data">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="site_title">Titre du site :</label>
+                    <input type="text" id="site_title" name="site_title" value="{{ config.site_title }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="site_subtitle">Sous-titre :</label>
+                    <input type="text" id="site_subtitle" name="site_subtitle" value="{{ config.site_subtitle }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="welcome_message">Message d'accueil :</label>
+                <textarea id="welcome_message" name="welcome_message" rows="3">{{ config.welcome_message }}</textarea>
+            </div>
+
+            <h3 style="color: var(--secondary-color); margin: 2rem 0 1rem 0;">📝 Textes personnalisables</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="back_home_text">Texte bouton retour accueil :</label>
+                    <input type="text" id="back_home_text" name="back_home_text" value="{{ config.get('back_home_text', '🏠 Accueil') }}" placeholder="🏠 Accueil">
+                </div>
+
+                <div class="form-group">
+                    <label for="order_button_text">Texte bouton commander :</label>
+                    <input type="text" id="order_button_text" name="order_button_text" value="{{ config.get('order_button_text', '🛒 Commander') }}" placeholder="🛒 Commander">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="no_products_text">Message aucun produit :</label>
+                    <input type="text" id="no_products_text" name="no_products_text" value="{{ config.get('no_products_text', 'Aucun produit disponible pour cette sélection.') }}" placeholder="Aucun produit disponible">
+                </div>
+
+                <div class="form-group">
+                    <label for="prices_title_text">Titre section prix :</label>
+                    <input type="text" id="prices_title_text" name="prices_title_text" value="{{ config.get('prices_title_text', 'Tarifs disponibles') }}" placeholder="Tarifs disponibles">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="copyright_text">Texte de copyright (bas de page) :</label>
+                    <input type="text" id="copyright_text" name="copyright_text" value="{{ config.get('copyright_text', '© 2024 La Main Verte. Tous droits réservés.') }}" placeholder="© 2024 La Main Verte. Tous droits réservés.">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="admin_password">Mot de passe admin :</label>
+                    <input type="password" id="admin_password" name="admin_password" value="{{ config.admin_password }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="global_order_link">Lien de commande global :</label>
+                    <input type="url" id="global_order_link" name="global_order_link" value="{{ config.global_order_link }}" placeholder="https://...">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="logo">Logo (depuis votre galerie) :</label>
+                    <input type="file" id="logo" name="logo" accept="image/*">
+                    {% if config.logo_path %}
+                    <small>Logo actuel : <img src="/static/{{ config.logo_path }}" style="width: 50px; height: 50px; border-radius: 50%; margin-left: 10px;"></small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="background_image">Image de fond (depuis votre galerie) :</label>
+                    <input type="file" id="background_image" name="background_image" accept="image/*">
+                    {% if config.background_image %}
+                    <small>Image actuelle définie</small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <h3 style="color: var(--secondary-color); margin: 2rem 0 1rem 0;">Couleurs du thème</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="primary_color">Couleur primaire :</label>
+                    <input type="color" id="primary_color" name="primary_color" value="{{ config.primary_color }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="secondary_color">Couleur secondaire :</label>
+                    <input type="color" id="secondary_color" name="secondary_color" value="{{ config.secondary_color }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="accent_color">Couleur d'accent :</label>
+                    <input type="color" id="accent_color" name="accent_color" value="{{ config.accent_color }}">
+                </div>
+            </div>
+
+            <h3 style="color: var(--secondary-color); margin: 2rem 0 1rem 0;">🎨 Effets visuels et animations</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="title_effect">Effet du titre principal :</label>
+                    <select id="title_effect" name="title_effect">
+                        <option value="none" {% if config.get('title_effect', 'none') == 'none' %}selected{% endif %}>Aucun effet</option>
+                        <option value="glow" {% if config.get('title_effect', 'none') == 'glow' %}selected{% endif %}>Effet lumineux</option>
+                        <option value="3d" {% if config.get('title_effect', 'none') == '3d' %}selected{% endif %}>Effet 3D</option>
+                        <option value="neon" {% if config.get('title_effect', 'none') == 'neon' %}selected{% endif %}>Effet néon</option>
+                        <option value="gradient" {% if config.get('title_effect', 'none') == 'gradient' %}selected{% endif %}>Dégradé animé</option>
+                        <option value="hologram" {% if config.get('title_effect', 'none') == 'hologram' %}selected{% endif %}>Hologramme</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="text_animation">Animation des textes :</label>
+                    <select id="text_animation" name="text_animation">
+                        <option value="none" {% if config.get('text_animation', 'none') == 'none' %}selected{% endif %}>Aucune animation</option>
+                        <option value="fade-in" {% if config.get('text_animation', 'none') == 'fade-in' %}selected{% endif %}>Apparition en fondu</option>
+                        <option value="slide-up" {% if config.get('text_animation', 'none') == 'slide-up' %}selected{% endif %}>Glissement vers le haut</option>
+                        <option value="typewriter" {% if config.get('text_animation', 'none') == 'typewriter' %}selected{% endif %}>Machine à écrire</option>
+                        <option value="bounce" {% if config.get('text_animation', 'none') == 'bounce' %}selected{% endif %}>Rebond</option>
+                        <option value="wave" {% if config.get('text_animation', 'none') == 'wave' %}selected{% endif %}>Effet vague</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="card_animation">Animation des cartes :</label>
+                    <select id="card_animation" name="card_animation">
+                        <option value="none" {% if config.get('card_animation', 'none') == 'none' %}selected{% endif %}>Aucune animation</option>
+                        <option value="float" {% if config.get('card_animation', 'none') == 'float' %}selected{% endif %}>Flottement</option>
+                        <option value="pulse" {% if config.get('card_animation', 'none') == 'pulse' %}selected{% endif %}>Pulsation</option>
+                        <option value="rotate" {% if config.get('card_animation', 'none') == 'rotate' %}selected{% endif %}>Rotation légère</option>
+                        <option value="scale" {% if config.get('card_animation', 'none') == 'scale' %}selected{% endif %}>Mise à l'échelle</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="categories">Catégories (séparées par des virgules) :</label>
+                    <input type="text" id="categories" name="categories" value="{{ config.categories|join(', ') }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="farms">Provenances (séparées par des virgules) :</label>
+                    <input type="text" id="farms" name="farms" value="{{ config.farms|join(', ') }}">
+                </div>
+            </div>
+
+            <h3 style="color: var(--secondary-color); margin: 2rem 0 1rem 0;">🌐 Réseaux sociaux principaux</h3>
+            <p style="opacity: 0.8; margin-bottom: 1rem;">Configurez vos liens vers les réseaux sociaux. Laissez vide si vous n'utilisez pas certains réseaux.</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="instagram">📸 Instagram :</label>
+                    <input type="url" id="instagram" name="instagram" value="{{ config.social_links.instagram }}" placeholder="https://instagram.com/votre_compte">
+                </div>
+
+                <div class="form-group">
+                    <label for="facebook">📘 Facebook :</label>
+                    <input type="url" id="facebook" name="facebook" value="{{ config.social_links.facebook }}" placeholder="https://facebook.com/votre_page">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="twitter">🐦 Twitter :</label>
+                    <input type="url" id="twitter" name="twitter" value="{{ config.social_links.twitter }}" placeholder="https://twitter.com/votre_compte">
+                </div>
+
+                <div class="form-group">
+                    <label for="tiktok">🎵 TikTok :</label>
+                    <input type="url" id="tiktok" name="tiktok" value="{{ config.social_links.tiktok }}" placeholder="https://tiktok.com/@votre_compte">
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Sauvegarder la configuration</button>
+        </form>
+    </div>
+
+    <!-- Réseaux sociaux personnalisés -->
+    <div class="admin-section">
+        <h2 style="font-size: 1.3rem;">📱 Réseaux sociaux personnalisés</h2>
+        <p style="opacity: 0.8; margin-bottom: 1.5rem;">Ajoutez d'autres réseaux sociaux comme Signal, Telegram, WhatsApp, etc.</p>
+
+        <form method="POST" action="{{ url_for('add_social_link') }}">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="social_name">📝 Nom du réseau :</label>
+                    <input type="text" id="social_name" name="social_name" placeholder="ex: Signal, Telegram, WhatsApp" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="social_url">🔗 URL complète :</label>
+                    <input type="url" id="social_url" name="social_url" placeholder="https://... ou signal.me/..." required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">✅ Ajouter le réseau social</button>
+        </form>
+
+        {% if config.custom_social_links %}
+        <div style="background: rgba(76, 175, 80, 0.1); padding: 1.5rem; border-radius: 8px; margin-top: 2rem; border-left: 4px solid var(--secondary-color);">
+            <h3 style="margin: 0 0 1rem 0; color: var(--secondary-color);">🎯 Vos réseaux sociaux personnalisés :</h3>
+            <div class="social-links-grid">
+                {% for social in config.custom_social_links %}
+                <div class="social-link-item">
+                    <div class="social-info">
+                        <strong style="color: var(--accent-color);">{{ social.name }}</strong>
+                        <small style="opacity: 0.7; word-break: break-all; display: block; margin-top: 5px;">{{ social.url }}</small>
+                    </div>
+                    <div class="social-actions">
+                        <a href="{{ social.url }}" target="_blank" class="btn btn-secondary" style="padding: 8px 12px; font-size: 0.8rem; white-space: nowrap;">👁️ Voir</a>
+                        <a href="{{ url_for('edit_social_link', index=loop.index0) }}" class="btn" style="padding: 8px 12px; font-size: 0.8rem; white-space: nowrap;">✏️ Modifier</a>
+                        <a href="{{ url_for('remove_social_link', index=loop.index0) }}" class="btn btn-danger" style="padding: 8px 12px; font-size: 0.8rem; white-space: nowrap;" onclick="return confirm('Supprimer ce réseau social ?')">🗑️ Supprimer</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-top: 1rem; text-align: center; opacity: 0.7;">
+            <p>🔍 Aucun réseau social personnalisé configuré</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Gestion des produits -->
+    <div class="admin-section">
+        <h2 style="font-size: 1.3rem;">Ajouter Produit</h2>
+        <form method="POST" action="{{ url_for('add_product') }}" enctype="multipart/form-data">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Nom du produit (avec emojis si souhaité) :</label>
+                    <input type="text" id="name" name="name" placeholder="ex: 🌿 Basilic Bio Premium" required>
+                    <small style="opacity: 0.7; font-size: 0.85rem;">💡 Astuce: Ajoutez des emojis pour rendre vos produits plus attractifs!</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Catégorie :</label>
+                    <select id="category" name="category" required>
+                        {% for category in config.categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="farm">Provenance :</label>
+                    <select id="farm" name="farm" required>
+                        {% for farm in config.farms %}
+                        <option value="{{ farm }}">{{ farm }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description :</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="image">Image (depuis votre galerie) :</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="video">Vidéo (optionnel) :</label>
+                    <input type="file" id="video" name="video" accept="video/*">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="order_link">Lien de commande spécifique (optionnel) :</label>
+                <input type="url" id="order_link" name="order_link" placeholder="https://...">
+            </div>
+
+            <h3 style="color: var(--secondary-color); margin: 2rem 0 1rem 0;">Prix multiples</h3>
+            <div id="prices-container">
+                <div class="price-inputs">
+                    <div class="price-row">
+                        <div>
+                            <label>Quantité :</label>
+                            <input type="text" name="quantity[]" placeholder="1" required>
+                        </div>
+                        <div>
+                            <label>Unité :</label>
+                            <input type="text" name="unit[]" placeholder="g" required>
+                        </div>
+                        <div>
+                            <label>Prix (€) :</label>
+                            <input type="number" name="price[]" step="0.01" placeholder="10.00" required>
+                        </div>
+                        <div>
+                            <button type="button" onclick="removePrice(this)" class="btn btn-danger" style="padding: 5px 10px;">-</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" onclick="addPrice()" class="btn btn-secondary">Ajouter un prix</button>
+
+            <h3 style="color: var(--secondary-color); margin: 2rem 0 1rem 0;">Réseaux sociaux du produit</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="product_instagram">Instagram :</label>
+                    <input type="url" id="product_instagram" name="product_instagram" placeholder="https://instagram.com/...">
+                </div>
+
+                <div class="form-group">
+                    <label for="product_facebook">Facebook :</label>
+                    <input type="url" id="product_facebook" name="product_facebook" placeholder="https://facebook.com/...">
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Ajouter le produit</button>
+        </form>
+    </div>
+
+    <!-- Liste des produits -->
+    <div class="admin-section">
+        <h2 style="font-size: 1.3rem;">Produits</h2>
+        {% if products %}
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                {% if product.image %}
+                <img src="/static/{{ product.image }}" alt="{{ product.name }}" class="product-image">
+                {% endif %}
+
+                <div class="product-info">
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    <p class="product-category">{{ product.category }} - {{ product.farm }}</p>
+
+                    <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                        <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-secondary">Modifier</a>
+                        <a href="{{ url_for('delete_product', product_id=product.id) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">Supprimer</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>Aucun produit pour le moment.</p>
+        {% endif %}
+    </div>
+
+    <!-- Gestion des pages -->
+    <div class="admin-section">
+        <h2 style="font-size: 1.3rem;">Pages</h2>
+
+        <form method="POST" action="{{ url_for('add_page') }}">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="page_name">Nom de la page (URL) :</label>
+                    <input type="text" id="page_name" name="page_name" placeholder="ex: livraison, contact" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="page_title">Titre affiché :</label>
+                    <input type="text" id="page_title" name="page_title" placeholder="ex: Conditions de livraison" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="page_content">Contenu de la page :</label>
+                <textarea id="page_content" name="page_content" required style="height: 150px;"></textarea>
+            </div>
+
+            <h3 style="color: var(--secondary-color); margin: 1.5rem 0 1rem 0;">Réseaux sociaux spécifiques à cette page (optionnel)</h3>
+            <div id="page-social-links">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="page_social_name">Nom du réseau :</label>
+                        <input type="text" name="page_social_name[]" placeholder="ex: Instagram, Signal">
+                    </div>
+                    <div class="form-group">
+                        <label for="page_social_url">URL :</label>
+                        <input type="url" name="page_social_url[]" placeholder="https://...">
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" onclick="addPageSocialLink()" class="btn btn-secondary" style="margin-bottom: 1rem;">Ajouter un réseau social</button>
+            <br>
+            <button type="submit" class="btn">Ajouter la page</button>
+        </form>
+
+        {% if config.pages %}
+        <h3 style="margin-top: 2rem;">Pages actuelles :</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
+            {% for page_name, page_data in config.pages.items() %}
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; min-width: 200px;">
+                <h4>{{ page_data.title }}</h4>
+                <p style="font-size: 0.8rem; opacity: 0.7;">URL: /page/{{ page_name }}</p>
+                {% if page_data.social_links %}
+                <div style="margin-top: 0.5rem;">
+                    <small style="opacity: 0.8;">Réseaux sociaux: {{ page_data.social_links|length }}</small>
+                </div>
+                {% endif %}
+                <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                    <a href="{{ url_for('dynamic_page', page_name=page_name) }}" class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;">Voir</a>
+                    <a href="{{ url_for('edit_page', page_name=page_name) }}" class="btn" style="padding: 5px 10px; font-size: 0.8rem;">Modifier</a>
+                    <a href="{{ url_for('delete_page', page_name=page_name) }}" class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;">Supprimer</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+    function addPageSocialLink() {
+        const container = document.getElementById('page-social-links');
+        const div = document.createElement('div');
+        div.className = 'form-row';
+        div.innerHTML = `
+            <div class="form-group">
+                <label>Nom du réseau :</label>
+                <input type="text" name="page_social_name[]" placeholder="ex: Instagram, Signal">
+            </div>
+            <div class="form-group">
+                <label>URL :</label>
+                <input type="url" name="page_social_url[]" placeholder="https://...">
+            </div>
+            <div style="display: flex; align-items: end;">
+                <button type="button" onclick="removePageSocialLink(this)" class="btn btn-danger" style="padding: 5px 10px;">-</button>
+            </div>
+        `;
+        container.appendChild(div);
+    }
+
+    function removePageSocialLink(button) {
+        button.closest('.form-row').remove();
+    }
+    </script>
+</div>
+
+<script>
+function addPrice() {
+    const container = document.getElementById('prices-container');
+    const priceDiv = document.createElement('div');
+    priceDiv.className = 'price-inputs';
+    priceDiv.innerHTML = `
+        <div class="price-row">
+            <div>
+                <label>Quantité :</label>
+                <input type="text" name="quantity[]" placeholder="3" required>
+            </div>
+            <div>
+                <label>Unité :</label>
+                <input type="text" name="unit[]" placeholder="g" required>
+            </div>
+            <div>
+                <label>Prix (€) :</label>
+                <input type="number" name="price[]" step="0.01" placeholder="25.00" required>
+            </div>
+            <div>
+                <button type="button" onclick="removePrice(this)" class="btn btn-danger" style="padding: 5px 10px;">-</button>
+            </div>
+        </div>
+    `;
+    container.appendChild(priceDiv);
+}
+
+function removePrice(button) {
+    const priceInputs = button.closest('.price-inputs');
+    priceInputs.remove();
+}
+</script>
+<style>
+.social-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive columns */
+    gap: 1rem;
+}
+
+.social-link-item {
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space evenly */
+}
+
+.social-info {
+    margin-bottom: 0.5rem;
+}
+
+.social-info strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.social-actions {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 0.5rem;
+}
+
+/* Mobile-friendly adjustments */
+@media (max-width: 600px) {
+            .social-links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .social-link-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .social-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .social-actions a {
+                width: 100%;
+                text-align: center;
+                padding: 10px 15px !important;
+                font-size: 0.8rem !important;
+            }
+        }
+</style>
+{% endblock %}

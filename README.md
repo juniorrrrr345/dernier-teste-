@@ -1,168 +1,174 @@
-# API Python pour Replit et Vercel
+# 🌿 La Main Verte - Boutique en ligne
 
-Ce projet est une API Python simple qui peut être développée sur Replit et déployée sur Vercel.
+Une application Flask moderne pour gérer une boutique de produits naturels avec interface d'administration complète.
 
 ## 🚀 Fonctionnalités
 
-- API REST avec Flask
-- Endpoints pour différents services
-- Compatible avec Replit et Vercel
-- Configuration automatique pour le déploiement
+### ✨ Interface publique
+- **Catalogue de produits** avec filtres par catégorie et provenance
+- **Pages dynamiques** créées depuis l'admin
+- **Support vidéo et images** pour les produits
+- **Prix multiples** par produit
+- **Réseaux sociaux** personnalisables
+- **Design responsive** et moderne
+- **Animations** et effets visuels
 
-## 📋 Endpoints disponibles
+### 🔧 Interface d'administration
+- **Gestion complète des produits** (ajout, modification, suppression)
+- **Configuration du site** (couleurs, textes, logo, image de fond)
+- **Gestion des réseaux sociaux** (principaux + personnalisés)
+- **Création de pages dynamiques**
+- **Upload d'images et vidéos**
+- **Système de prix multiples**
 
-### GET /
-Page d'accueil avec informations de base
+## 🛠️ Installation et déploiement
 
-### GET /api/hello?name=Nom
-Salutation personnalisée
+### Déploiement sur Vercel
 
-### GET /api/weather
-Informations météo simulées
+1. **Fork ou clonez ce repository**
 
-### GET /api/users
-Liste des utilisateurs
+2. **Connectez-vous à Vercel**
+   - Allez sur [vercel.com](https://vercel.com)
+   - Connectez-vous avec votre compte GitHub
 
-### POST /api/users
-Créer un nouvel utilisateur
+3. **Importez le projet**
+   - Cliquez sur "New Project"
+   - Importez votre repository
+   - Vercel détectera automatiquement la configuration Python
 
-## 🛠️ Installation et développement
+4. **Configuration automatique**
+   - Le fichier `vercel.json` est déjà configuré
+   - Les dépendances sont dans `requirements.txt`
+   - L'application démarre sur `/api/index.py`
 
-### Sur Replit
+5. **Déployez !**
+   - Cliquez sur "Deploy"
+   - Votre site sera accessible en quelques minutes
 
-1. Clonez ce repository dans votre Replit
-2. Les dépendances s'installeront automatiquement
-3. Cliquez sur "Run" pour démarrer le serveur
+### Configuration initiale
 
-### En local
+1. **Accédez à l'admin**
+   - Allez sur `votre-site.vercel.app/admin`
+   - Mot de passe par défaut : `admin123`
 
-```bash
-# Installer les dépendances
-pip install -r requirements.txt
+2. **Configurez votre site**
+   - Modifiez le titre, sous-titre, couleurs
+   - Ajoutez votre logo et image de fond
+   - Configurez vos réseaux sociaux
 
-# Démarrer le serveur
-python main.py
-```
-
-Le serveur sera accessible sur `http://localhost:8080`
-
-## 🚀 Déploiement sur Vercel
-
-### Prérequis
-
-1. Compte Vercel
-2. CLI Vercel installé (`npm i -g vercel`)
-
-### Étapes de déploiement
-
-1. **Connectez-vous à Vercel :**
-   ```bash
-   vercel login
-   ```
-
-2. **Déployez le projet :**
-   ```bash
-   vercel
-   ```
-
-3. **Pour les déploiements suivants :**
-   ```bash
-   vercel --prod
-   ```
-
-### Configuration Vercel
-
-Le fichier `vercel.json` configure automatiquement :
-- Le runtime Python 3.9
-- Les routes vers l'API
-- La structure de déploiement
+3. **Ajoutez vos produits**
+   - Utilisez l'interface d'administration
+   - Ajoutez des images/vidéos
+   - Configurez les prix multiples
 
 ## 📁 Structure du projet
 
 ```
 ├── api/
-│   └── index.py          # Point d'entrée pour Vercel
-├── main.py               # Point d'entrée pour Replit/local
-├── requirements.txt       # Dépendances Python
-├── vercel.json           # Configuration Vercel
-├── .replit               # Configuration Replit
-├── pyproject.toml        # Configuration Python moderne
-└── README.md             # Ce fichier
+│   └── index.py          # Point d'entrée principal pour Vercel
+├── templates/            # Templates HTML
+│   ├── base.html         # Template de base
+│   ├── index.html        # Page d'accueil
+│   ├── product_detail.html
+│   ├── admin_dashboard.html
+│   └── ...
+├── static/              # Fichiers statiques (images, vidéos)
+│   └── uploads/
+├── vercel.json          # Configuration Vercel
+├── requirements.txt     # Dépendances Python
+└── README.md
 ```
 
-## 🔧 Configuration
+## 🎨 Personnalisation
 
-### Variables d'environnement
+### Couleurs du thème
+- **Couleur primaire** : `#2e7d32` (vert foncé)
+- **Couleur secondaire** : `#4caf50` (vert clair)
+- **Couleur d'accent** : `#81C784` (vert pastel)
+- **Couleur de texte** : `#FFFFFF` (blanc)
+- **Couleur de fond** : `#1B5E20` (vert très foncé)
 
-Créez un fichier `.env` pour les variables locales :
+### Effets visuels
+- **Effets de titre** : lumineux, 3D, néon, dégradé, hologramme
+- **Animations de texte** : fondu, glissement, machine à écrire, rebond, vague
+- **Animations de cartes** : flottement, pulsation, rotation, mise à l'échelle
 
-```env
-FLASK_ENV=development
-PORT=8080
-```
+## 📱 Fonctionnalités avancées
 
-### Personnalisation
+### Réseaux sociaux
+- **Principaux** : Instagram, Facebook, Twitter, TikTok
+- **Personnalisés** : Signal, Telegram, WhatsApp, etc.
 
-1. **Ajouter de nouveaux endpoints :** Modifiez `api/index.py`
-2. **Changer la configuration :** Modifiez `vercel.json`
-3. **Ajouter des dépendances :** Modifiez `requirements.txt`
+### Gestion des médias
+- **Images** : JPG, PNG, GIF (redimensionnement automatique)
+- **Vidéos** : MP4, MOV, AVI, MKV, WebM
+- **Taille maximale** : 100MB par fichier
 
-## 🧪 Tests
+### Système de prix
+- **Prix multiples** par produit
+- **Quantités personnalisées** (g, kg, unités, etc.)
+- **Affichage formaté** avec symboles €
+
+## 🔒 Sécurité
+
+- **Mot de passe admin** configurable
+- **Validation des fichiers** uploadés
+- **Sécurisation des noms de fichiers**
+- **Protection contre les injections**
+
+## 📊 Performance
+
+- **Images optimisées** automatiquement
+- **Vidéos compressées** pour le web
+- **Interface responsive** pour tous les appareils
+- **Chargement rapide** grâce à Vercel
+
+## 🚀 Développement local
+
+Si vous voulez tester en local :
 
 ```bash
-# Installer les dépendances de développement
-pip install -e ".[dev]"
+# Installer les dépendances
+pip install -r requirements.txt
 
-# Lancer les tests
-pytest
+# Lancer l'application
+python api/index.py
 
-# Formater le code
-black .
-
-# Vérifier la qualité du code
-flake8 .
+# Accéder à l'application
+# http://localhost:5000
 ```
 
-## 📝 Exemples d'utilisation
+## 📝 Notes importantes
 
-### Test de l'API
+### Pour Vercel
+- L'application utilise le runtime Python 3.9
+- Les fichiers statiques sont servis automatiquement
+- La configuration est dans `vercel.json`
 
-```bash
-# Test de la page d'accueil
-curl https://votre-projet.vercel.app/
+### Limitations Vercel
+- **Temps d'exécution** : 30 secondes max par requête
+- **Taille des fichiers** : 100MB max
+- **Stockage** : Les fichiers sont persistants entre les déploiements
 
-# Test de l'endpoint hello
-curl "https://votre-projet.vercel.app/api/hello?name=Alice"
-
-# Test de l'endpoint users
-curl https://votre-projet.vercel.app/api/users
-
-# Créer un utilisateur
-curl -X POST https://votre-projet.vercel.app/api/users \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Nouveau", "email": "nouveau@example.com"}'
-```
-
-## 🤝 Contribution
-
-1. Fork le projet
-2. Créez une branche pour votre fonctionnalité
-3. Committez vos changements
-4. Poussez vers la branche
-5. Ouvrez une Pull Request
-
-## 📄 Licence
-
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
+### Conseils d'utilisation
+1. **Optimisez vos images** avant upload
+2. **Utilisez des formats web** (JPEG, PNG, MP4)
+3. **Testez sur mobile** pour vérifier la responsivité
+4. **Sauvegardez régulièrement** votre configuration
 
 ## 🆘 Support
 
 Si vous rencontrez des problèmes :
 
-1. Vérifiez que toutes les dépendances sont installées
-2. Consultez les logs Vercel pour les erreurs de déploiement
-3. Testez en local avant de déployer
+1. **Vérifiez les logs** dans Vercel Dashboard
+2. **Testez en local** d'abord
+3. **Vérifiez les permissions** des fichiers
+4. **Consultez la documentation** Flask
+
+## 📄 Licence
+
+Ce projet est open source et disponible sous licence MIT.
 
 ---
 
-**Note :** Ce projet est optimisé pour fonctionner à la fois sur Replit (développement) et Vercel (production).
+**🌿 La Main Verte** - Votre boutique de produits naturels en ligne !
